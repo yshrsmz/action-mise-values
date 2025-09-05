@@ -1,0 +1,46 @@
+name: 'Read mise.toml versions'
+description: 'Reads tools table values from mise.toml'
+inputs:
+  mise-toml:
+    description: "path to mise.toml"
+    required: false
+    default: "mise.toml"
+outputs:
+  tools:
+    description: 'JSON object containing all tools table entries from mise.toml'
+    value: ${{ steps.read-versions.outputs.tools }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Check mise.toml exists
+      shell: bash
+      env:
+        MISE_TOML_PATH: ${{ inputs.mise-toml }}
+      run: |
+        if [ ! -f "$MISE_TOML_PATH" ]; then
+          echo "Error: $MISE_TOML_PATH does not exist"
+          exit 1
+        fi
+
+    - name: Extract tools table
+      id: yq
+      uses: mikefarah/yq@f03c9dc599c37bfcaf533427211d05e51e6fee64 # v4.47.1
+      with:
+        cmd: yq '.tools' --output-format json --indent 0 ${{ inputs.mise-toml }}
+
+    - name: Read mise.toml versions
+      id: read-versions
+      shell: bash
+      run: |
+        echo "Reading tool versions from mise.toml..."
+        # Use the JSON produced by the previous yq step to avoid re-parsing
+        TOOLS='${{ steps.yq.outputs.result }}'
+
+        if [ -z "$TOOLS" ] || [ "$TOOLS" = "null" ]; then
+          echo "No tools section found in mise.toml"
+          TOOLS='{}'
+        fi
+
+        # Output tools JSON (primary)
+        echo "tools=$TOOLS" >> "$GITHUB_OUTPUT"
+        echo "Tools: $TOOLS"
