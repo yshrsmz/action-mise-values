@@ -38,54 +38,39 @@ name: Example
 on: [push]
 
 jobs:
-	read-tools:
-		runs-on: ubuntu-latest
-		steps:
-			- uses: actions/checkout@v4
+  read-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-			- name: Read tools from mise.toml
-				id: mise
-				uses: yshrsmz/action-mise-values@main # pin to a commit SHA for stability
-				with:
-					mise-toml: mise.toml
+      - name: Read tools from mise.toml
+        id: mise
+        uses: yshrsmz/action-mise-values@main # pin to a commit SHA for stability
+        with:
+          mise-toml: mise.toml
 
-			- name: Setup Node
-				uses: actions/setup-node@v4
-				with:
-					node-version: ${{ fromJson(steps.mise.outputs.tools).node }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ fromJson(steps.mise.outputs.tools).node }}
 
-			- name: Setup Python
-				uses: actions/setup-python@v5
-				with:
-					python-version: ${{ fromJson(steps.mise.outputs.tools).python }}
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ fromJson(steps.mise.outputs.tools).python }}
 
-			- name: Setup Go
-				uses: actions/setup-go@v5
-				with:
-					go-version: ${{ fromJson(steps.mise.outputs.tools).go }}
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ fromJson(steps.mise.outputs.tools).go }}
 
-			- name: Show tools JSON
-				run: |
-					echo "All tools: ${{ steps.mise.outputs.tools }}"
+      - name: Show tools JSON
+        run: |
+          echo "All tools: ${{ steps.mise.outputs.tools }}"
 
-			- name: Extract single value (jq example)
-				run: |
-					echo '${{ steps.mise.outputs.tools }}' | jq -r '.node'
-```
-
-### Using in a matrix
-You can feed the JSON into a matrix generation step if desired:
-```yaml
-	build:
-		runs-on: ubuntu-latest
-		steps:
-			- uses: actions/checkout@v4
-			- id: mise
-				uses: yshrsmz/action-mise-values@main
-			- name: Set up node from mise value
-				uses: actions/setup-node@v4
-				with:
-					node-version: ${{ fromJson(steps.mise.outputs.tools).node }}
+      - name: Extract single value (jq example)
+        run: |
+          echo '${{ steps.mise.outputs.tools }}' | jq -r '.node'
 ```
 
 ## Notes
