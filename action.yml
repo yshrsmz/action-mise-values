@@ -1,5 +1,8 @@
-name: 'Read mise.toml versions'
-description: 'Reads tools table values from mise.toml'
+name: 'Read mise.toml tools entries'
+description: 'Reads tools table entries from mise.toml'
+branding:
+  icon: anchor
+  color: green
 inputs:
   mise-toml:
     description: "path to mise.toml"
