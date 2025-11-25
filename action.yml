@@ -27,7 +27,7 @@ runs:
 
     - name: Extract tools table
       id: yq
-      uses: mikefarah/yq@6251e95af8df3505def48c71f3119836701495d6 # v4.47.2
+      uses: mikefarah/yq@7ccaf8e700ce99eb3f0f6cef7f5930a0b3c827cd # v4.49.2
       with:
         cmd: yq '.tools' --output-format json --indent 0 ${{ inputs.mise-toml }}
 
