@@ -45,7 +45,7 @@ jobs:
         uses: haya14busa/action-cond@94f77f7a80cd666cb3155084e428254fea4281fd # v1.2.1
         with:
           cond: "${{ startsWith(github.ref, 'refs/tags/') }}"
-          if_true: ${{ github.ref }}
+          if_true: ${{ github.ref_name }}
           if_false: ${{ steps.bumpr.outputs.next_version }}
 
       # Create release
