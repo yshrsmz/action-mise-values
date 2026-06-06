@@ -1,4 +1,12 @@
 name: release
+
+# Serialize release runs on the same ref so that near-simultaneous pushes
+# (e.g. multiple Renovate PRs merged at once) do not race. cancel-in-progress
+# is false to avoid aborting an in-flight release midway.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 on:
   push:
     branches:
